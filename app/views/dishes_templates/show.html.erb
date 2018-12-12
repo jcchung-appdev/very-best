@@ -33,7 +33,7 @@
         </li>
         <% @dish.bookmarks.where(user_id: current_user.id).order('created_at DESC').each do |bookmark| %>
           <li class="list-group-item">
-            <a href="/bookmarks/<%= bookmark.id %>">
+            <p><a href="/bookmarks/<%= bookmark.id %>">
               <%= Venue.find(bookmark.venue_id).name %>
             </a>
             <small class="float-right text-muted">
@@ -45,6 +45,10 @@
                 <i class="fa fa-trash-o"></i>
               </a>
             </small>
+            </p>
+            <% if bookmark.notes.present? %>
+              <p><%= bookmark.notes %></p>
+            <% end %>
           </li>
         <% end %>
         <div class="card-footer text-center">
