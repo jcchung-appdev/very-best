@@ -15,13 +15,15 @@ class VenuesController < ApplicationController
     lat = data.dig("results",0,"geometry", "location", "lat")
 
     lng = data.dig("results",0,"geometry", "location", "lng")
+    fad = data.dig("results",0,"formatted_address")
+    cty = data.dig("results",0,"address_components", 3,"long_name")
     
-    return [lat, lng]
+    return [lat, lng, fad, cty]
   end 
   
   def index
     @q = Venue.ransack(params.fetch("q", nil))
-    @venues = @q.result(:distinct => true).includes(:bookmarks, :neighborhood, :fans, :specialties).page(params.fetch("page", nil)).per(10)
+    @venues = @q.result(:distinct => true).includes(:bookmarks, :neighborhood, :fans, :specialties).joins(:bookmarks).where('bookmarks.user_id = ?',current_user.id)#.page(params.fetch("page", nil)).per(10)
 
     @location_hash = Gmaps4rails.build_markers(@venues.where.not(:address_latitude => nil)) do |venue, marker|
       marker.lat venue.address_latitude
@@ -55,6 +57,8 @@ class VenuesController < ApplicationController
     coords = address_to_coords(params.fetch("address"))
     @venue.address_latitude = coords[0]
     @venue.address_longitude = coords[1]
+    @venue.formatted_address = coords[2]
+    @venue.city = coords[3]
 
     save_status = @venue.save
 
@@ -87,6 +91,8 @@ class VenuesController < ApplicationController
     coords = address_to_coords(params.fetch("address"))
     @venue.address_latitude = coords[0]
     @venue.address_longitude = coords[1]
+    @venue.formatted_address = coords[2]
+    @venue.city = coords[3]
     
     save_status = @venue.save
 

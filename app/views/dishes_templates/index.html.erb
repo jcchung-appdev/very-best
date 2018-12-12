@@ -50,7 +50,7 @@
           <form action="/create_bookmark" method="post">
             <input type="hidden" name="user_id" value="<%= current_user.id %>">
             <input type="hidden" name="dish_id" value="<%= dish.id %>">
-            <%= select_tag(:venue_id, options_from_collection_for_select(Venue.all.order('name ASC'), :id, :name), :prompt => "Choose a venue...", :class => "form_control") %>
+            <%= select_tag(:venue_id, options_from_collection_for_select(Venue.all.order('name ASC'), :id, :name), :prompt => "Choose a venue...", :class => "form_control", :style => 'width: 150px') %>
             <button class="btn btn-primary btn-sm">
               <i class="fa fa-heart"></i>
             </button>
@@ -70,7 +70,6 @@
       </tr>
       <% end %>
     </table>
-    <%= paginate @dishes, theme: 'twitter-bootstrap-4' %>
   </div>
   <div class="col-md-3"><a href="/venues/new" class="btn btn-block btn-success">Add a new venue</a></div>
 </div>

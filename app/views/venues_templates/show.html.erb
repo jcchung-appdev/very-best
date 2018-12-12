@@ -12,14 +12,14 @@
       </div>
       <div class="card-body">
         <div id="location_map" style="height: 480px;"></div>
-        </div>
-        <ul class="list-group">
-          <li class="list-group-item list-group-item-success">
-            Dishes you loved here
-          </li>
-          <% @venue.bookmarks.where(user_id: current_user.id).order('created_at DESC').each do |bookmark| %>
-            <li class="list-group-item">
-              <a href="/bookmarks/<%= bookmark.id %>">
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-success">
+          Dishes you loved here
+        </li>
+        <% @venue.bookmarks.where(user_id: current_user.id).order('created_at DESC').each do |bookmark| %>
+          <li class="list-group-item">
+            <a href="/bookmarks/<%= bookmark.id %>">
               <%= Dish.find(bookmark.dish_id).name %>
             </a>
             <small class="float-right text-muted">
@@ -250,10 +250,10 @@
         "lat": <%= @venue.address_latitude %>,
         "lng": <%= @venue.address_longitude %>,
         "infowindow": "<h5><%= @venue.name %></h5><small><%= @venue.address_formatted_address %><br /><%= @venue.created_at %></small>"
-            }
-            ]);
-            handler.bounds.extendWith(markers);
-            handler.fitMapToBounds();
-            handler.getMap().setZoom(15);
-            });
-          </script>
+          }
+          ]);
+          handler.bounds.extendWith(markers);
+          handler.fitMapToBounds();
+          handler.getMap().setZoom(15);
+          });
+        </script>
