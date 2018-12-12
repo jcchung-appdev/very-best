@@ -43,8 +43,8 @@
         <td>
           <!-- Bookmark -->
           <% if Bookmark.where(user_id: current_user.id, dish_id: dish.id).exists? %>
-          <a href="/venues/<%= Bookmark.where(user_id: current_user.id, dish_id: dish.id)[0].venue_id %>">
-            <%= Venue.find(Bookmark.where(user_id: current_user.id, dish_id: dish.id)[0].venue_id).name %>
+          <a href="/venues/<%= Bookmark.where(user_id: current_user.id, dish_id: dish.id).last.venue_id %>">
+            <%= Venue.find(Bookmark.where(user_id: current_user.id, dish_id: dish.id).last.venue_id).name %>
           </a>
           <% else %>
           <form action="/create_bookmark" method="post">
