@@ -12,7 +12,15 @@
         <%= f.label :name_cont, "Name contains" %>
         <%= f.text_field :name_cont, :class => "form-control", :placeholder => "Name contains" %>
       </div>
-
+      <div class="form-group">
+        <% Cuisine.all.order('name ASC').each do |cuisine| %>
+          <label>
+            <%= check_box_tag('q[cuisine_id_eq_any][]', cuisine.id, (true if @q.cuisine_id_eq_any.try(:include?, cuisine.id))) %>
+            <%= cuisine.name %>
+          </label><br />
+        <% end %>
+      </div>
+      <!-- Submit button -->
       <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
 
       <a href="/dishes" class="btn btn-secondary btn-block mb-1">Clear filters</a>
@@ -41,7 +49,8 @@
           <% else %>
           <form action="/create_bookmark" method="post">
             <input type="hidden" name="user_id" value="<%= current_user.id %>">
-            <%= select_tag(:venue_id, options_from_collection_for_select(Venue.all, :id, :name), :prompt => "Choose a venue...", :class => "form_control") %>
+            <input type="hidden" name="dish_id" value="<%= dish.id %>">
+            <%= select_tag(:venue_id, options_from_collection_for_select(Venue.all.order('name ASC'), :id, :name), :prompt => "Choose a venue...", :class => "form_control") %>
             <button class="btn btn-primary btn-sm">
               <i class="fa fa-heart"></i>
             </button>
@@ -63,4 +72,5 @@
     </table>
     <%= paginate @dishes, theme: 'twitter-bootstrap-4' %>
   </div>
+  <div class="col-md-3"><a href="/venues/new" class="btn btn-block btn-success">Add a new venue</a></div>
 </div>
