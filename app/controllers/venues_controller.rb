@@ -1,4 +1,24 @@
 class VenuesController < ApplicationController
+  def address_to_coords(address)
+    require 'open-uri'
+
+    # ==========================================================================
+    # Your code goes below.
+    # The street address the user input is in the string @street_address.
+    # A URL-safe version of the street address, with spaces and other illegal
+    #   characters removed, is in the string url_safe_street_address.
+    # ==========================================================================
+
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address="+URI.encode(address)+"&key=AIzaSyA5qwIlcKjijP_Ptmv46mk4cCjuWhSzS78"
+    data = JSON.parse(open(url).read)
+    
+    lat = data.dig("results",0,"geometry", "location", "lat")
+
+    lng = data.dig("results",0,"geometry", "location", "lng")
+    
+    return [lat, lng]
+  end 
+  
   def index
     @q = Venue.ransack(params.fetch("q", nil))
     @venues = @q.result(:distinct => true).includes(:bookmarks, :neighborhood, :fans, :specialties).page(params.fetch("page", nil)).per(10)
@@ -32,6 +52,9 @@ class VenuesController < ApplicationController
     @venue.name = params.fetch("name")
     @venue.address = params.fetch("address")
     @venue.neighborhood_id = params.fetch("neighborhood_id")
+    coords = address_to_coords(params.fetch("address"))
+    @venue.address_latitude = coords[0]
+    @venue.address_longitude = coords[1]
 
     save_status = @venue.save
 
@@ -61,7 +84,10 @@ class VenuesController < ApplicationController
     @venue.name = params.fetch("name")
     @venue.address = params.fetch("address")
     @venue.neighborhood_id = params.fetch("neighborhood_id")
-
+    coords = address_to_coords(params.fetch("address"))
+    @venue.address_latitude = coords[0]
+    @venue.address_longitude = coords[1]
+    
     save_status = @venue.save
 
     if save_status == true
